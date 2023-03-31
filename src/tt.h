@@ -80,7 +80,7 @@ namespace tt {
     };
 }
 
-tt::HashTable* TT; /// shared hash table
+//tt::HashTable* TT; /// shared hash table
 
 inline uint64_t pow2(uint64_t size) {
     if (size & (size - 1)) {

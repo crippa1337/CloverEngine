@@ -501,6 +501,8 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
         if (move == excluded)
             continue;
 
+        //assert(isLegalMoveDummy(board, move));
+
         bool isQuiet = !isNoisyMove(board, move), refutationMove = (picker.trueStage < STAGE_QUIETS);
         int hist = 0, h, ch, fh;
 
@@ -812,6 +814,8 @@ int Search::rootSearch(int alpha, int beta, int depth, int multipv, StackEntry* 
             best = score;
             bestMove = move;
 
+            rootScore[multipv] = score;
+
             if (score > alpha) {
                 alpha = score;
 
@@ -1094,7 +1098,7 @@ std::pair <int, uint16_t> Search::startSearch(Info* _info) {
 
     //TT->age();
 
-    return std::make_pair(scores[1], bm);
+    return std::make_pair(rootScore[1], bm);
 }
 
 void Search::clearHistory() {

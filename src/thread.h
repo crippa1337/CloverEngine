@@ -178,7 +178,8 @@ struct Search {
     bool principalSearcher;
     Board board;
 
-    //tt::HashTable* threadTT;
+    tt::HashTable* TT;
+    int rootScore[256];
 
     std::unique_ptr <std::thread[]> threads;
     std::unique_ptr <Search[]> params;
