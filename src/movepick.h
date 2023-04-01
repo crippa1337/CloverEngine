@@ -175,8 +175,18 @@ public:
                     if (pt == PAWN) // pawn push, generally good?
                         score += pawnPushBonus;
 
-                    if (pt != KING && pt != PAWN)
-                        score += kingAttackBonus * count(genAttacksSq(allPieces, to, pt) & enemyKingRing);
+                    if (pt != KING && pt != PAWN) {
+                        uint64_t temp = genAttacksSq(allPieces, to, pt);
+                        if (temp == ALL) {
+                            board.print();
+                            std::cout << board.fen() << "\n";
+                            for (int i = board.ply - 1; i >= 0; i--) {
+                                std::cout << toString((stack - i)->move) << "\n";
+                            }
+                            exit(0);
+                        }
+                        score += kingAttackBonus * count(temp & enemyKingRing);
+                    }
 
                     score += searcher->nodesSearched[0][from][to] / nodesSearchedDiv + 1000000; // the longer it takes a move to be refuted, the higher its chance to become the best move
                     scores[m++] = score;

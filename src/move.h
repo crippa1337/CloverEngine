@@ -1104,8 +1104,16 @@ bool isPseudoLegalMove(Board& board, uint16_t move) {
         return 0;
 
     /// check for normal moves
-    if (pt != KING)
+    if (pt != KING) {
+        uint64_t temp = genAttacksSq(occ, from, pt);
+        if (temp == ALL) {
+            board.print();
+            std::cout << board.fen() << "\n";
+            std::cout << toString(move) << "\n";
+            exit(0);
+        }
         return genAttacksSq(occ, from, pt) & (1ULL << to);
+    }
 
     return kingBBAttacks[from] & (1ULL << to);
 

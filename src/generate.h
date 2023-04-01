@@ -32,7 +32,7 @@ struct FenData {
 void generateFens(std::atomic <uint64_t>& sumFens, uint64_t nrFens, std::string path, std::string logPath, uint64_t seed) {
     std::ofstream out(path);
     std::ofstream log_out(logPath);
-    std::mt19937_64 gn((seed + 9879084276926ULL) ^ 8265297682976ULL);
+    std::mt19937_64 gn((seed + 76478611241841941ULL) ^ 1467418681551851885ULL);
 
     Info info[1];
     int gameInd = 1;
@@ -53,7 +53,6 @@ void generateFens(std::atomic <uint64_t>& sumFens, uint64_t nrFens, std::string 
     searcher->TT = new tt::HashTable();
     searcher->principalSearcher = true;
     FenData fens[10000];
-    uint64_t startTime = getTime(), kekTime = 0;
 
     while (totalFens < nrFens) {
         FenData data;
