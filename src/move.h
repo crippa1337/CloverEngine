@@ -339,6 +339,7 @@ void Board::makeNullMove() {
     enPas = -1;
     turn ^= 1;
     key ^= 1;
+    checkers = getAttackers(*this, turn, pieces[WHITE] | pieces[BLACK], king(1 ^ turn));
     pinnedPieces = getPinnedPieces(*this, turn);
     ply++;
     gamePly++;
