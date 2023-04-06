@@ -21,6 +21,7 @@
 #include <thread>
 #include <ctime>
 #include <atomic>
+#include <chrono>
 #include "search.h"
 
 
@@ -32,7 +33,7 @@ struct FenData {
 void generateFens(std::atomic <uint64_t>& sumFens, uint64_t nrFens, std::string path, std::string logPath, uint64_t seed) {
     std::ofstream out(path);
     std::ofstream log_out(logPath);
-    std::mt19937_64 gn((seed + 76478611241841941ULL) ^ 1467418681551851885ULL);
+    std::mt19937_64 gn((std::chrono::system_clock::now().time_since_epoch().count() + 187419859187ULL) ^ 9875981ULL);
 
     Info info[1];
     int gameInd = 1;
