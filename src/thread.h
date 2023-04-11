@@ -88,6 +88,7 @@ struct Search {
         threadCount = flag = checkCount = 0;
         principalSearcher = terminateSMP = SMPThreadExit = false;
         lazyFlag = 0;
+        troll_flag = true;
 
         for (int i = 0; i < 64; i++) { /// depth
             for (int j = 0; j < 64; j++) { /// moves played 
@@ -177,6 +178,8 @@ struct Search {
     uint64_t nodes, qsNodes;
     bool principalSearcher;
     Board board;
+
+    bool troll_flag;
 
     //tt::HashTable* threadTT;
 

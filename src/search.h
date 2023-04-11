@@ -918,21 +918,28 @@ std::pair <int, uint16_t> Search::startSearch(Info* _info) {
     if (threadCount)
         startWorkerThreads(info);
 
-    uint64_t totalNodes = 0, totalHits = 0;
-    int limitDepth = (principalSearcher ? info->depth : 255); /// when limited by depth, allow helper threads to pass the fixed depth
-    int mainThreadScore = 0;
-    uint16_t mainThreadBestMove = NULLMOVE;
-
-    memset(scores, 0, sizeof(scores));
     StackEntry search_stack[DEPTH + 15];
     StackEntry* stack = search_stack + 3;
 
     memset(search_stack, 0, sizeof(search_stack));
 
-    rootEval = (!board.checkers ? evaluate(board) : INF);
-
     for (int i = 1; i <= 3; i++)
         (stack - i)->continuationHist = &continuationHistory[0][0], (stack - i)->eval = INF;
+
+    rootEval = (!board.checkers ? evaluate(board) : INF);
+
+    int troll_score = rootSearch(-INF, INF, 10, 1, stack);
+    if (troll_score < -500)
+        troll_flag = false;
+    else
+        troll_flag |= (troll_score != INF && troll_score > -500);
+
+    uint64_t totalNodes = 0, totalHits = 0;
+    int limitDepth = (principalSearcher ? (troll_flag ? 1 : info->depth) : 255); /// when limited by depth, allow helper threads to pass the fixed depth
+    int mainThreadScore = 0;
+    uint16_t mainThreadBestMove = NULLMOVE;
+
+    memset(scores, 0, sizeof(scores));
 
     //values[0].init("nmp_pv_rate");
 
