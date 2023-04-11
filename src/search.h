@@ -302,7 +302,7 @@ int Search::quiesce(int alpha, int beta, StackEntry* stack, bool useTT) {
     }
 
     if (isCheck && best == -INF) {
-        return -INF + ply;
+        return (isCheck && (type((stack - 1)->move) == CASTLE || type((stack - 1)->move) == ENPASSANT) ? -INF + ply : 0);
     }
 
     /// store info in transposition table
@@ -655,7 +655,7 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
     }
 
     if (!played) {
-        return (isCheck ? -INF + ply : 0);
+        return (isCheck && (type((stack - 1)->move) == CASTLE || type((stack - 1)->move) == ENPASSANT) ? -INF + ply : 0);
     }
 
     /// update killer and history heuristics in case of a cutoff
@@ -827,7 +827,7 @@ int Search::rootSearch(int alpha, int beta, int depth, int multipv, StackEntry* 
     TT->prefetch(key);
 
     if (!played) {
-        return (isCheck ? -INF : 0);
+        return (isCheck && (type((stack - 1)->move) == CASTLE || type((stack - 1)->move) == ENPASSANT) ? -INF : 0);
     }
 
     /// update killer and history heuristics in case of cutoff
