@@ -177,14 +177,6 @@ public:
 
                     if (pt != KING && pt != PAWN) {
                         uint64_t temp = genAttacksSq(allPieces, to, pt);
-                        if (temp == ALL) {
-                            board.print();
-                            std::cout << board.fen() << "\n";
-                            for (int i = board.ply - 1; i >= 0; i--) {
-                                std::cout << toString((stack - i)->move) << "\n";
-                            }
-                            exit(0);
-                        }
                         score += kingAttackBonus * count(temp & enemyKingRing);
                     }
 
