@@ -493,6 +493,7 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
     uint16_t counter = (nullSearch ? NULLMOVE : cmTable[1 ^ board.turn][(stack - 1)->piece][sqTo((stack - 1)->move)]);
 
     Movepick picker(ttMove, stack->killer, counter, -(seeDepthCoef - (ply % 2 == 0 && rootEval != INF ? rootEval / 100 : 0)) * depth);
+    constexpr int PROBABILITY = 400;
 
     uint16_t move;
 
@@ -618,17 +619,18 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
 
         /// principal variation search
         uint64_t initNodes = nodes;
+        int sign = (rng(troll_gen) % PROBABILITY == 0 && quietUs ? -1 : 1);
 
         if (R != 1) {
-            score = -search(-alpha - 1, -alpha, newDepth - R, true, stack + 1);
+            score = -sign * search(-alpha - 1, -alpha, newDepth - R, true, stack + 1);
         }
 
         if ((R != 1 && score > alpha) || (R == 1 && (!pvNode || played > 1))) {
-            score = -search(-alpha - 1, -alpha, newDepth - 1, !cutNode, stack + 1);
+            score = -sign * search(-alpha - 1, -alpha, newDepth - 1, !cutNode, stack + 1);
         }
 
         if (pvNode && (played == 1 || score > alpha)) {
-            score = -search(-beta, -alpha, newDepth - 1, false, stack + 1);
+            score = -sign * search(-beta, -alpha, newDepth - 1, false, stack + 1);
         }
 
         board.undoMove(move);

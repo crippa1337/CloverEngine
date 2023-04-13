@@ -33,6 +33,7 @@
 #endif
 
 std::mt19937_64 gen(0xBEEF);
+std::mt19937_64 troll_gen(time(0));
 std::uniform_int_distribution <uint64_t> rng;
 
 #define TablePieceTo std::array <std::array <int, 64>, 13>
