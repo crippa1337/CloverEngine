@@ -62,8 +62,8 @@
 
 INCBIN(Net, EVALFILE);
 
-const int INPUT_NEURONS = 3072;
-const int SIDE_NEURONS = 768;
+const int INPUT_NEURONS = 6144;
+const int SIDE_NEURONS = 512;
 const int HIDDEN_NEURONS = 2 * SIDE_NEURONS;
 const int REG_LENGTH = sizeof(reg_type) / sizeof(int16_t);
 const int NUM_REGS = SIDE_NEURONS / REG_LENGTH;
@@ -71,7 +71,7 @@ const int BUCKET_UNROLL = 256;
 const int UNROLL_LENGTH = BUCKET_UNROLL / REG_LENGTH;
 
 const int Q_IN = 16;
-const int Q_HIDDEN = 128;
+const int Q_HIDDEN = 512;
 
 enum {
     SUB = 0, ADD
@@ -361,7 +361,7 @@ public:
     }
 
     void addHistory(uint16_t move, uint8_t piece, uint8_t captured) {
-        hist[histSz] = { move, piece, captured, (piece_type(piece) == KING && recalc(sqFrom(move), sqTo(move))), { 0, 0 } };
+        hist[histSz] = { move, piece, captured, (piece_type(piece) == KING && recalc(sqFrom(move), sqTo(move), color_of(piece))), { 0, 0 } };
         histSz++;
     }
 
@@ -427,7 +427,8 @@ public:
         intData = (uint64_t*)gNetData;
 
         x = *intData;
-        assert(x == 2361601);
+        
+        assert(x == 3147265);
         intData++;
 
         floatData = (float*)intData;

@@ -325,6 +325,7 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
         return quiesce(alpha, beta, stack);
 
     bool pvNode = (alpha < beta - 1);
+    bool allNode = !pvNode && !cutNode;
     uint16_t ttMove = NULLMOVE;
     int alphaOrig = alpha;
     uint64_t key = board.key;
@@ -560,7 +561,7 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
                 ex = 1;
             }
         }
-        else if (!pvNode && !cutNode && played >= 1 && entry.depth() >= depth - 3 && bound == UPPER)
+        else if (allNode && played >= 1 && entry.depth() >= depth - 3 && bound == UPPER)
             ex = -1;
 
         /// update stack info
