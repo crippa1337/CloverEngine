@@ -212,7 +212,7 @@ inline int16_t netInd(int piece, int sq, int kingSq, int side) {
 }
 
 inline bool recalc(int from, int to, bool side) {
-    return (from & 4) != (to & 4) || kingIndTable2[from * (56 ^ !side)] != kingIndTable2[to ^ (56 * !side)];
+    return (from & 4) != (to & 4) || kingIndTable2[from ^ (56 * !side)] != kingIndTable2[to ^ (56 * !side)];
 }
 
 inline int hashVal(int value, int ply) {
