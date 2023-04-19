@@ -36,7 +36,7 @@
 #define reg_madd16  _mm512_madd_epi16
 #define reg_load    _mm512_load_si512
 #define reg_save    _mm512_store_si512
-#define ALIGN       64
+#define ALIGN       512
 #elif defined(__AVX2__) || defined(__AVX__)
 #define reg_type    __m256i
 #define reg_add16   _mm256_add_epi16
@@ -46,7 +46,7 @@
 #define reg_madd16  _mm256_madd_epi16
 #define reg_load    _mm256_load_si256
 #define reg_save    _mm256_store_si256
-#define ALIGN       32
+#define ALIGN       256
 #elif defined(__SSE2__)
 #define reg_type    __m128i
 #define reg_add16   _mm_add_epi16
@@ -57,7 +57,7 @@
 #define reg_madd16  _mm_madd_epi16
 #define reg_load    _mm_load_si128
 #define reg_save    _mm_store_si128
-#define ALIGN       16
+#define ALIGN       128
 #endif
 
 INCBIN(Net, EVALFILE);
@@ -420,62 +420,24 @@ public:
     }
 
     void load() {
-        uint64_t* intData;
-        float* floatData;
-
-        uint64_t x;
-        intData = (uint64_t*)gNetData;
-
-        x = *intData;
-        assert(x == 2951425);
-        intData++;
-
-        floatData = (float*)intData;
+        int16_t* shortData;
+        shortData = (int16_t*)gNetData;
 
         int sz;
 
         sz = SIDE_NEURONS;
 
-        int mn = 1e9, mx = -1e9;
         for (int i = 0; i < SIDE_NEURONS * INPUT_NEURONS; i++) {
-            float val = *floatData;
-            mn = std::min<int>(mn, round(val * Q_IN));
-            mx = std::max<int>(mx, round(val * Q_IN));
-            inputWeights[(i / SIDE_NEURONS) * SIDE_NEURONS + (i % SIDE_NEURONS)] = round(val * Q_IN);
-            //inputWeights_f[(i / SIDE_NEURONS) * SIDE_NEURONS + (i % SIDE_NEURONS)] = val;
-            floatData++;
+            inputWeights[(i / SIDE_NEURONS) * SIDE_NEURONS + (i % SIDE_NEURONS)] = *shortData++;
         }
-        //std::cout << "\n";
-        //std::cout << mn << " " << mx << "\n";
 
-        mn = 1e9, mx = -1e9;
         for (int j = 0; j < sz; j++) {
-            float val = *floatData;
-            mn = std::min<int>(mn, round(val * Q_IN));
-            mx = std::max<int>(mx, round(val * Q_IN));
-            inputBiases[j] = round(val * Q_IN);
-            //inputBiases_f[j] = val;
-            floatData++;
-            //std::cout << val << "\n";
+            inputBiases[j] = *shortData++;
         }
-        //std::cout << mn << " " << mx << "\n";
-
-        mn = 1e9, mx = -1e9;
         for (int j = 0; j < HIDDEN_NEURONS; j++) {
-            float val = *floatData;
-            mn = std::min<int>(mn, round(val * Q_HIDDEN));
-            mx = std::max<int>(mx, round(val * Q_HIDDEN));
-            outputWeights[j] = round(val * Q_HIDDEN);
-            //outputWeights_f[j] = val;
-            floatData++;
+            outputWeights[j] = *shortData++;
         }
-        //std::cout << mn << " " << mx << "\n";
-
-        float val = *floatData;
-        outputBias = round(val * Q_HIDDEN);
-        //outputBias_f = val;
-
-        //std::cout << outputBias_f << "\n";
+        outputBias = *shortData;
     }
 
     int histSz;
