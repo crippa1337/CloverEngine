@@ -499,6 +499,7 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
     Movepick picker(ttMove, stack->killer, counter, -(seeDepthCoef - (ply % 2 == 0 && rootEval != INF ? rootEval / 100 : 0)) * depth);
 
     uint16_t move;
+    int alphaBeatCnt = 0;
 
     while ((move = picker.nextMove(this, stack, board, skip, false)) != NULLMOVE) {
 
@@ -615,6 +616,8 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
 
             R += cutNode;
 
+            R += alphaBeatCnt;
+
             R = std::min(depth - 1, std::max(R, 1)); /// clamp R
         }
 
@@ -648,6 +651,8 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
 
             if (score > alpha) {
                 alpha = score;
+
+                alphaBeatCnt++;
 
                 updatePv(ply, move);
 
