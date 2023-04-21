@@ -562,7 +562,7 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
             }
             else if (isCheck)
                 ex = 1;
-            else if (!nullSearch && sqTo((stack - 1)->move) == sqTo(stack->move) && picker.trueStage == STAGE_GOOD_NOISY)
+            else if (!nullSearch && sqTo((stack - 1)->move) == sqTo(move) && picker.trueStage == STAGE_GOOD_NOISY)
                 ex = 1;
         }
         else if (allNode && played >= 1 && entry.depth() >= depth - 3 && bound == UPPER)
