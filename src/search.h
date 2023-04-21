@@ -560,9 +560,10 @@ int Search::search(int alpha, int beta, int depth, bool cutNode, StackEntry* sta
                 else if (ttValue >= beta || ttValue <= alpha)
                     ex = -1;
             }
-            else if (isCheck) {
+            else if (isCheck)
                 ex = 1;
-            }
+            else if (!nullSearch && sqTo((stack - 1)->move) == sqTo(stack->move) && picker.trueStage == STAGE_GOOD_NOISY)
+                ex = 1;
         }
         else if (allNode && played >= 1 && entry.depth() >= depth - 3 && bound == UPPER)
             ex = -1;
@@ -697,7 +698,7 @@ int Search::rootSearch(int alpha, int beta, int depth, int multipv, StackEntry* 
     int played = 0, bound = NONE;
     int best = -INF;
     uint16_t bestMove = NULLMOVE;
-    int ttHit = 0, ttValue = 0;
+    int ttValue = 0;
 
     nodes++;
 
@@ -711,7 +712,6 @@ int Search::rootSearch(int alpha, int beta, int depth, int multipv, StackEntry* 
 
     if (TT->probe(key, entry)) {
         int score = entry.value(0);
-        ttHit = 1;
         ttValue = score;
         bound = entry.bound(), ttMove = entry.move;
         eval = entry.eval;
